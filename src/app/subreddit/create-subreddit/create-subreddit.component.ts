@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { throwError } from 'rxjs';
 import { SubredditModel } from '../subreddit-response';
 import { SubredditService } from '../subreddit.service';
@@ -16,7 +17,7 @@ export class CreateSubredditComponent implements OnInit {
   title = new FormControl('');
   description = new FormControl('');
 
-  constructor(private router: Router, private subredditService: SubredditService) {
+  constructor(private router: Router, private subredditService: SubredditService, private toastr: ToastrService) {
     this.createSubredditForm = new FormGroup({
       title: new FormControl('', Validators.required),
       description: new FormControl('', Validators.required)
@@ -42,6 +43,7 @@ export class CreateSubredditComponent implements OnInit {
     this.subredditService.createSubreddit(this.subredditModel).subscribe(data => {
       this.router.navigateByUrl('/list-subreddits');
     }, error => {
+      this.toastr.error(error.error.message);
       throwError(error);
     })
   }
